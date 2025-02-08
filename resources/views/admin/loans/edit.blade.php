@@ -62,7 +62,7 @@
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Atualizar Empréstimo</button>
-                    <a href="{{ route('loans.show', $loan) }}" class="btn btn-secondary">Cancelar</a>
+                    <a href="{{ route('loans.index', $loan) }}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>

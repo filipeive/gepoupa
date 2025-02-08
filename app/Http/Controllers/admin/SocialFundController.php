@@ -74,7 +74,7 @@ class SocialFundController extends Controller
         $socialFund = SocialFund::create($validated);
 
         // Redirecionar para a lista de fundos sociais com uma mensagem de sucesso
-        return redirect()->route('admin.social-funds.index')
+        return redirect()->route('social-funds.index')
             ->with('success', 'Fundo Social criado com sucesso!');
     }
 
@@ -118,7 +118,7 @@ class SocialFundController extends Controller
         $socialFund->update($data);
 
         return redirect()
-            ->route('admin.social-funds.index')
+            ->route('social-funds.index')
             ->with('success', 'Pagamento atualizado com sucesso!');
     }
 
@@ -131,7 +131,7 @@ class SocialFundController extends Controller
         $socialFund->delete();
 
         return redirect()
-            ->route('admin.social-funds.index')
+            ->route('social-funds.index')
             ->with('success', 'Pagamento excluído com sucesso!');
     }
 

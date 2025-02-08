@@ -12,7 +12,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active"><a href="{{route('admin.savings.index')}}">Poupanças</a></li>
+                    <li class="breadcrumb-item active"><a href="{{route('savings.index')}}">Poupanças</a></li>
                 </ol>
             </div>
         </div>
@@ -68,7 +68,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Poupança #{{ $saving->id }}</h3>
                         <div class="card-tools">
-                            <a href="{{ route('admin.savings.edit', $saving->id) }}" class="btn btn-primary">
+                            <a href="{{ route('savings.edit', $saving->id) }}" class="btn btn-primary">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
                         </div>

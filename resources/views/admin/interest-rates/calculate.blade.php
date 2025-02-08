@@ -1,4 +1,6 @@
+{{-- resources/views/admin/interest-rates/calculate.blade.php --}}
 @extends('adminlte::page')
+
 @section('title', 'Calcular Distribuição de Juros')
 
 @section('content_header')
@@ -6,83 +8,96 @@
 @stop
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-money-bill"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Juros Disponíveis para Distribuição</span>
-                            <span class="info-box-number">{{ number_format($undistributedInterest, 2) }} MZN</span>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Juros Disponíveis para Distribuição</h3>
+                </div>
+                <div class="card-body">
+                    <h2 class="text-center mb-4">
+                        MZN {{ number_format($undistributedInterest, 2, ',', '.') }}
+                    </h2>
+
+                    <form action="{{ route('interest-rates.distribute') }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="cycle_id">Ciclo</label>
+                            <select name="cycle_id" id="cycle_id" class="form-control" required>
+                                @foreach ($cycles as $cycle)
+                                    <option value="{{ $cycle->id }}">
+                                        {{ $cycle->name }} ({{ $cycle->start_date->format('d/m/Y') }} -
+                                        {{ $cycle->end_date->format('d/m/Y') }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label for="distribution_date">Data da Distribuição</label>
+                            <input type="date" class="form-control" id="distribution_date" name="distribution_date"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Descrição</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Membro</th>
+                                    <th>Total em Poupança</th>
+                                    <th>Percentual</th>
+                                    <th>Valor a Receber</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($members as $member)
+                                    <tr>
+                                        <td>{{ $member->name }}</td>
+                                        <td>MZN {{ number_format($member->total_savings, 2, ',', '.') }}</td>
+                                        <td>
+                                            {{ number_format(($member->total_savings / $totalSavings) * 100, 2) }}%
+                                        </td>
+                                        <td>
+                                            @php
+                                                $amount =
+                                                    ($member->total_savings / $totalSavings) * $undistributedInterest;
+                                            @endphp
+                                            <input type="hidden" name="distributions[{{ $member->id }}][user_id]"
+                                                value="{{ $member->id }}">
+                                            <input type="number" class="form-control"
+                                                name="distributions[{{ $member->id }}][amount]"
+                                                value="{{ number_format($amount, 2, '.', '') }}" step="0.01" required>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Confirmar Distribuição
+                            </button>
+                            <a href="{{ route('interest-rates.index') }}" class="btn btn-default">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <form action="{{ route('interest-management.distribute') }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <label for="distribution_date">Data da Distribuição</label>
-                    <input type="date" name="distribution_date" id="distribution_date" 
-                           class="form-control @error('distribution_date') is-invalid @enderror"
-                           value="{{ old('distribution_date', date('Y-m-d')) }}">
-                    @error('distribution_date')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Descrição</label>
-                    <input type="text" name="description" id="description" 
-                           class="form-control @error('description') is-invalid @enderror"
-                           value="{{ old('description') }}">
-                    @error('description')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Membro</th>
-                                <th>Total em Poupança</th>
-                                <th>Percentual</th>
-                                <th>Valor a Receber</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($members as $member)
-                                @php
-                                    $percentage = $totalSavings > 0 ? 
-                                        ($member->total_savings / $totalSavings) * 100 : 0;
-                                    $amount = $undistributedInterest * ($percentage / 100);
-                                @endphp
-                                <tr>
-                                    <td>{{ $member->name }}</td>
-                                    <td>{{ number_format($member->total_savings, 2) }} MZN</td>
-                                    <td>{{ number_format($percentage, 2) }}%</td>
-                                    <td>
-                                        <input type="hidden" 
-                                               name="distributions[{{ $member->id }}][user_id]" 
-                                               value="{{ $member->id }}">
-                                        <input type="number" step="0.01" 
-                                               name="distributions[{{ $member->id }}][amount]" 
-                                               class="form-control"
-                                               value="{{ number_format($amount, 2, '.', '') }}">
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Confirmar Distribuição</button>
-                    <a href="{{ route('interest-management.index') }}" class="btn btn-secondary">Cancelar</a>
-                </div>
-            </form>
         </div>
     </div>
+@stop
+
+@section('css')
+    <link rel="stylesheet" href="/css/admin_custom.css">
+@stop
+
+@section('js')
+    <script>
+        $(document).ready(function() {
+            // Aqui você pode adicionar JavaScript adicional se necessário
+        });
+    </script>
 @stop

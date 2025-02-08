@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-primary">
-                <form action="{{ route('admin.social-funds.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('social-funds.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="form-group">

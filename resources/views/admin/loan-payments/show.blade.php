@@ -48,11 +48,11 @@
                     </dl>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ route('admin.loan-payments.edit', $loanPayment) }}" 
+                    <a href="{{ route('loan-payments.edit', $loanPayment) }}" 
                        class="btn btn-primary">
                         <i class="fas fa-edit"></i> Editar
                     </a>
-                    <form action="{{ route('admin.loan-payments.destroy', $loanPayment) }}" 
+                    <form action="{{ route('loan-payments.destroy', $loanPayment) }}" 
                           method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
@@ -61,7 +61,7 @@
                             <i class="fas fa-trash"></i> Excluir
                         </button>
                     </form>
-                    <a href="{{ route('admin.loan-payments.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('loan-payments.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Voltar
                     </a>
                 </div>

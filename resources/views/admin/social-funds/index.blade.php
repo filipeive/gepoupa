@@ -24,7 +24,7 @@
     <div class="card">
         <div class="card-header">
             <div class="card-tools">
-                <form action="{{ route('admin.social-funds.index') }}" method="GET" class="form-inline">
+                <form action="{{ route('social-funds.index') }}" method="GET" class="form-inline">
                     <div class="input-group input-group-sm">
                         <input type="text" name="search" class="form-control" placeholder="Buscar membro..."
                             value="{{ request('search') }}">
@@ -83,13 +83,13 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.social-funds.show', $fund) }}" class="btn btn-sm btn-info">
+                                    <a href="{{ route('social-funds.show', $fund) }}" class="btn btn-sm btn-info">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.social-funds.edit', $fund) }}" class="btn btn-sm btn-warning">
+                                    <a href="{{ route('social-funds.edit', $fund) }}" class="btn btn-sm btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.social-funds.destroy', $fund) }}" method="POST"
+                                    <form action="{{ route('social-funds.destroy', $fund) }}" method="POST"
                                         onsubmit="return confirm('Tem certeza?');" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
@@ -178,7 +178,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.social-funds.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('social-funds.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">

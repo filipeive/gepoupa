@@ -28,7 +28,7 @@
                         <h3 class="card-title">Filtros</h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.savings.report') }}" method="GET">
+                        <form action="{{ route('savings.report') }}" method="GET">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="start_date">Data Inicial</label>

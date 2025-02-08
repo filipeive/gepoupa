@@ -8,7 +8,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.loan-payments.update', $loanPayment) }}" 
+            <form action="{{ route('loan-payments.update', $loanPayment) }}" 
                   method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -70,7 +70,7 @@
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Atualizar Pagamento</button>
-                    <a href="{{ route('admin.loan-payments.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <a href="{{ route('loan-payments.index') }}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>

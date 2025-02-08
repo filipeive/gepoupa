@@ -1,135 +1,104 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+// Controllers do Site
 use App\Http\Controllers\site\HomeController as SiteHomeController;
-use App\Http\Controllers\admin\HomeController as AdminHomeController;
-use App\Http\Controllers\admin\Auth\LoginController as AdminLoginController;
-use App\Http\Controllers\admin\Auth\RegisterController as AdminRegisterController;
-use App\Http\Controllers\admin\UsersController as AdminUsersController;
-use App\Http\Controllers\admin\ProfileController as AdminProfileController;
-use App\Http\Controllers\admin\SavingController as SavingController;
-use App\Http\Controllers\admin\LoanController as LoanController;
-use App\Http\Controllers\admin\LoanPaymentController as LoanPaymentController;
-use App\Http\Controllers\admin\SocialFundController as SocialFundController;
-use App\Http\Controllers\admin\MemberManagementController as MemberManagementController;
+
+// Controllers do Admin
+use App\Http\Controllers\admin\HomeController;
+use App\Http\Controllers\admin\Auth\LoginController;
+use App\Http\Controllers\admin\Auth\RegisterController;
+use App\Http\Controllers\admin\UsersController;
+use App\Http\Controllers\admin\ProfileController;
+use App\Http\Controllers\admin\SavingController;
+use App\Http\Controllers\admin\SavingCycleController;
+use App\Http\Controllers\admin\LoanController;
+use App\Http\Controllers\admin\LoanPaymentController;
+use App\Http\Controllers\admin\SocialFundController;
+use App\Http\Controllers\admin\MemberManagementController;
 use App\Http\Controllers\admin\SavingsReportController;
-use App\Http\Controllers\admin\InterestManagementController as InterestManagementController;
-use App\Http\Controllers\Admin\InterestRateController;
+use App\Http\Controllers\admin\InterestRatesController;
+use App\Http\Controllers\admin\InterestDistributionController;
+use App\Http\Controllers\admin\ReportController;
 
-
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
+// Rota principal do site
 Route::get('/', [SiteHomeController::class, 'index']);
 
-/* Route::prefix('painel')->group(function () {
-    Route::get('/', [AdminHomeController::class, 'index'])->name('admin');
-    Route::get('login', [AdminLoginController::class, 'index'])->name('login');
-    Route::post('login', [AdminLoginController::class, 'authenticate']);
-
-    Route::get('register', [AdminRegisterController::class, 'index'])->name('register');
-    Route::post('register', [AdminRegisterController::class,'register']);
-    Route::post('logout', [AdminLoginController::class, 'logout'])->name('logout');
-    Route::get('logout', [AdminLoginController::class, 'logout'])->name('logout');
-    Route::resource('users', AdminUsersController::class);
-    Route::get('users/{user}/export', [AdminUserController::class, 'export'])->name('users.export');
-    Route::get('profile', [AdminProfileController::class, 'index'])->name('profile');
-    Route::get('profile/save/{id}', [AdminProfileController::class, 'save'])->name('save');
-    Route::put('profile/save/{id}', [AdminProfileController::class, 'save'])->name('save');
-    Route::resource('members', MemberManagementController::class)->names('admin.members');
-    Route::get('members/{member}', [MemberManagementController::class, 'show'])->name('members.show');
-    Route::resource('savings', SavingController::class)->names('admin.savings');
-    //index de poupancas
-    //Route::get('savings', [SavingsController::class, 'index'])->name('savings');
-
-    Route::get('savings/reports', [SavingController::class, 'report'])->name('admin.savings.report');
-    Route::get('savings/export', [SavingsReportController::class, 'export'])->name('admin.savings.export');
-    Route::get('loans', [LoanController::class, 'index'])->name('admin.loans');
-    Route::post('loans', [loanController::class, 'registerPayment'])->name('loans.register-payment');
-    Route::get('loans/{loan}', [LoanController::class,'show'])->name('admin.loans.show');
-    Route::put('loans/{loan}', [LoanController::class,'updateStatus'])->name('admin.loans.update-status');
-    Route::get('loans/export', [LoanController::class, 'export'])->name('admin.loans.export');
-
-    //loans payment controller resouce
-    Route::resource('loan-payments', LoanPaymentController::class)->names('admin.loan-payments');
-    //social fund controller resource
-    Route::resource('social-funds', SocialFundController::class);
-    Route::get('interest-rates', [InterestManagementController::class, 'index'])->name('admin.interest-rates');
-    Route::post('interest-management/set-rate', [InterestRateController::class, 'setRate'])->name('admin.interest-management.set-rate');
-    Route::get('interest-management/calculate', [InterestManagementController::class,'monthlyInterest'])->name('admin.interest-management.calculate');
-}); */
+// Rotas do Painel Administrativo
 Route::prefix('painel')->group(function () {
-    Route::get('/', [AdminHomeController::class, 'index'])->name('admin');
-    
+    // Dashboard
+    Route::get('/', [HomeController::class, 'index'])->name('admin');
+
     // Autenticação
-    Route::get('login', [AdminLoginController::class, 'index'])->name('login');
-    Route::post('login', [AdminLoginController::class, 'authenticate']);
-    Route::post('logout', [AdminLoginController::class, 'logout'])->name('logout');
-    Route::get('register', [AdminRegisterController::class, 'index'])->name('register');
-    Route::post('register', [AdminRegisterController::class, 'register']);
-    
-    // Gerenciamento de usuários e perfil
-    Route::resource('users', AdminUsersController::class);
-    Route::get('users/{user}/export', [AdminUsersController::class, 'export'])->name('users.export');
-    Route::resource('profile', AdminProfileController::class)->only(['index', 'update']);
-    
-    // Membros e Poupanças
-    Route::resource('members', MemberManagementController::class)->names('admin.members');
-    Route::resource('savings', SavingController::class)->names('admin.savings');
-    Route::get('savings/reports', [SavingController::class, 'report'])->name('admin.savings.report');
-    Route::get('savings/export', [SavingsReportController::class, 'export'])->name('admin.savings.export');
-    
-    // Empréstimos
-    // Rota para exibir a lista de empréstimos
-    Route::get('loans', [LoanController::class, 'index'])->name('admin.loans.index');
+    Route::get('login', [LoginController::class, 'index'])->name('login');
+    Route::post('login', [LoginController::class, 'authenticate']);
+    Route::any('logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('register', [RegisterController::class, 'index'])->name('register');
+    Route::post('register', [RegisterController::class, 'register']);
 
-    // Rota para exibir os detalhes de um empréstimo
-    Route::get('loans/{loan}', [LoanController::class, 'show'])->name('admin.loans.show');
+    // Rotas protegidas por autenticação
+    Route::middleware('auth')->group(function () {
+        // Usuários
+        Route::resource('users', UsersController::class);
+        Route::get('users/{user}/export', [UsersController::class, 'export'])
+            ->name('users.export');
 
-    // Rota para criar um novo empréstimo
-    Route::get('loans/create', [LoanController::class, 'create'])->name('admin.loans.create');
-    Route::post('loans', [LoanController::class, 'store'])->name('admin.loans.store');
+        // Perfil
+        Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+        //profile save
+        Route::put('profile/{id}', [ProfileController::class, 'save'])->name('profile.save');
 
-    // Rota para atualizar o status de um empréstimo
-    Route::put('loans/{loan}', [LoanController::class, 'update'])->name('admin.loans.update');
-    
-    // Rota para registrar um pagamento de empréstimo
-    Route::post('loans/{loan}/payment', [LoanController::class, 'registerPayment'])->name('admin.loans.registerPayment');
-    
-    // Pagamentos de Empréstimos
-    Route::resource('loan-payments', LoanPaymentController::class)->names('admin.loan-payments');
-    
-    // Fundos Sociais e Taxas de Juros
-    // Rota para exibir a lista de fundos sociais
-    Route::get('social-funds', [SocialFundController::class, 'index'])->name('admin.social-funds.index');
+        // Membros
+        Route::resource('members', MemberManagementController::class);
+        
+        // Poupanças
+        Route::resource('savings', SavingController::class);
+        Route::get('savings/reports', [SavingController::class, 'report'])
+            ->name('savings.report');
+        Route::get('savings/export', [SavingsReportController::class, 'export'])
+            ->name('savings.export');
+        Route::get('savings/export/excel', [SavingController::class, 'exportExcel'])->name('savings.export.excel');
+        Route::get('savings/export/pdf', [SavingController::class, 'exportPDF'])->name('savings.export.pdf');
+        
+        // Ciclos de Poupança
+        Route::resource('saving-cycles', SavingCycleController::class);
 
-    // Rota para exibir os detalhes de um fundo social específico
-    Route::get('social-funds/{socialFund}', [SocialFundController::class, 'show'])->name('admin.social-funds.show');
+        // Empréstimos
+        Route::resource('loans', LoanController::class);
+        Route::post('loans/{loan}/payment', [LoanController::class, 'registerPayment'])
+            ->name('loans.register-payment');
+        Route::get('loans.export', [LoanController::class, 'export'])
+            ->name('loans.export');
 
-    // Rota para criar um novo fundo social
-    Route::get('social-funds/create', [SocialFundController::class, 'create'])->name('admin.social-funds.create');
-    Route::post('social-funds', [SocialFundController::class, 'store'])->name('admin.social-funds.store');
+        // Pagamentos de Empréstimos
+        Route::resource('loan-payments', LoanPaymentController::class);
 
-    // Rota para editar um fundo social
-    Route::get('social-funds/{socialFund}/edit', [SocialFundController::class, 'edit'])->name('admin.social-funds.edit');
-    Route::put('social-funds/{socialFund}', [SocialFundController::class, 'update'])->name('admin.social-funds.update');
+        // Fundo Social
+        Route::resource('social-funds', SocialFundController::class);
 
-    // Rota para excluir um fundo social
-    Route::delete('social-funds/{socialFund}', [SocialFundController::class, 'destroy'])->name('admin.social-funds.destroy');
-    Route::get('interest-rates', [InterestManagementController::class, 'index'])->name('admin.interest-rates');
-    Route::post('interest-management/set-rate', [InterestRateController::class, 'setRate'])->name('admin.interest-management.set-rate');
-    Route::get('interest-management/calculate', [InterestManagementController::class, 'monthlyInterest'])->name('admin.interest-management.calculate');
+        // Gestão de Juros
+        Route::get('interest-rates', [InterestRatesController::class, 'index'])->name('interest-rates.index');
+        Route::post('interest-rates/set', [InterestRatesController::class, 'setRate'])->name('interest-rates.set');
+        Route::get('interest-rates/calculate', [InterestRatesController::class, 'calculateDistribution'])->name('interest-rates.calculate');
+        Route::post('interest-rates/distribute', [InterestRatesController::class, 'distribute'])->name('interest-rates.distribute');
+        Route::get('interest-rates/report', [InterestRatesController::class, 'report'])->name('interest-rates.report');
+        Route::get('interest-rates/export', [InterestRatesController::class, 'export'])->name('interest-rates.export'); 
+        Route::get('interest-distribution', [InterestDistributionController::class, 'index'])
+            ->name('interest-distribution.index');
+        Route::get('interest-distribution/create', [InterestDistributionController::class,'create'])->name('interest-distributions.create');
+        Route::post('interest-distribution/store', [InterestDistributionController::class,'store'])->name('interest-distributions.store');
+        Route::post('interest-distribution/calculate', [InterestDistributionController::class, 'calculate'])
+            ->name('interest-distribution.calculate');
+        Route::get('interest-distributions/export', [InterestDistributionController::class, 'export'])
+            ->name('interest-distributions.export');
+            });
+        Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
+        Route::post('reports/generate', [ReportController::class, 'generateReport'])->name('admin.reports.generate');
 });
 
+
+// Rota para página não encontrada
 Route::fallback(function () {
     return view('errors.404');
 });

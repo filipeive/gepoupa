@@ -88,10 +88,10 @@
                                 <option value="pending" {{ old('status', $socialFund->status) == 'pending' ? 'selected' : '' }}>
                                     Pendente
                                 </option>
-                                <option value="approved" {{ old('status', $socialFund->status) == 'approved' ? 'selected' : '' }}>
+                                <option value="paid" {{ old('status', $socialFund->status) == 'approved' ? 'selected' : '' }}>
                                     Aprovado
                                 </option>
-                                <option value="rejected" {{ old('status', $socialFund->status) == 'rejected' ? 'selected' : '' }}>
+                                <option value="latej" {{ old('status', $socialFund->status) == 'rejected' ? 'selected' : '' }}>
                                     Rejeitado
                                 </option>
                             </select>

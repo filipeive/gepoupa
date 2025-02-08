@@ -298,51 +298,56 @@ return [
     |
     */
 
-    'menu' => [
-        // Navbar items
-        [
-            'topnav_right' => true,
-        ],
-
-        // Dashboard principal
+   'menu' => [
+    // Dashboard
         [
             'text' => 'Dashboard',
             'url' => 'painel',
             'icon' => 'fas fa-tachometer-alt',
-            'icon_color' => 'green',
+            'icon_color' => 'primary',
         ],
 
-        // Gestão Financeira
         ['header' => 'GESTÃO FINANCEIRA'],
+
+        // Poupanças
         [
             'text' => 'Poupanças',
             'icon' => 'fas fa-piggy-bank',
+            'icon_color' => 'success',
             'submenu' => [
                 [
-                    'text' => 'Lista de Poupanças',
+                    'text' => 'Visualizar Todas',
                     'url' => 'painel/savings',
                     'icon' => 'fas fa-list',
                 ],
                 [
                     'text' => 'Nova Poupança',
                     'url' => 'painel/savings/create',
-                    'icon' => 'fas fa-plus',
+                    'icon' => 'fas fa-plus-circle',
+                ],
+                [
+                    'text' => 'Relatórios',
+                    'url' => 'painel/reports',
+                    'icon' => 'fas fa-chart-bar',
                 ],
             ],
         ],
+
+        // Empréstimos
         [
             'text' => 'Empréstimos',
-            'icon' => 'fas fa-money-bill',
+            'icon' => 'fas fa-money-bill-wave',
+            'icon_color' => 'warning',
             'submenu' => [
                 [
-                    'text' => 'Lista de Empréstimos',
+                    'text' => 'Visualizar Todos',
                     'url' => 'painel/loans',
                     'icon' => 'fas fa-list',
                 ],
                 [
                     'text' => 'Novo Empréstimo',
                     'url' => 'painel/loans/create',
-                    'icon' => 'fas fa-plus',
+                    'icon' => 'fas fa-plus-circle',
                 ],
                 [
                     'text' => 'Pagamentos',
@@ -351,109 +356,66 @@ return [
                 ],
             ],
         ],
+
+        // Fundo Social
         [
             'text' => 'Fundo Social',
             'icon' => 'fas fa-hand-holding-heart',
+            'icon_color' => 'danger',
             'submenu' => [
                 [
-                    'text' => 'Lista de Contribuições',
+                    'text' => 'Visualizar Todos',
                     'url' => 'painel/social-funds',
                     'icon' => 'fas fa-list',
                 ],
                 [
                     'text' => 'Nova Contribuição',
                     'url' => 'painel/social-funds/create',
-                    'icon' => 'fas fa-plus',
+                    'icon' => 'fas fa-plus-circle',
                 ],
             ],
         ],
+
+        ['header' => 'CONFIGURAÇÕES'],
 
         // Gestão de Juros
-        ['header' => 'GESTÃO DE JUROS'],
         [
-            'text' => 'Taxas de Juros',
+            'text' => 'Gestão de Juros',
             'icon' => 'fas fa-percentage',
+            'icon_color' => 'info',
             'submenu' => [
                 [
-                    'text' => 'Lista de Taxas',
+                    'text' => 'Taxas de Juros',
                     'url' => 'painel/interest-rates',
-                    'icon' => 'fas fa-list',
+                    'icon' => 'fas fa-chart-line',
                 ],
                 [
-                    'text' => 'Nova Taxa',
-                    'url' => 'painel/interest-rates/create',
-                    'icon' => 'fas fa-plus',
-                ],
-            ],
-        ],
-        [
-            'text' => 'Distribuições de Juros',
-            'icon' => 'fas fa-hand-holding-usd',
-            'submenu' => [
-                [
-                    'text' => 'Lista de Distribuições',
-                    'url' => 'painel/interest-distributions',
-                    'icon' => 'fas fa-list',
-                ],
-                [
-                    'text' => 'Nova Distribuição',
-                    'url' => 'painel/interest-distributions/create',
-                    'icon' => 'fas fa-plus',
+                    'text' => 'Distribuição',
+                    'url' => 'painel/interest-distribution',
+                    'icon' => 'fas fa-calculator',
                 ],
             ],
         ],
 
-        // Gestão de Membros
-        ['header' => 'GESTÃO DE MEMBROS'],
+        // Gestão de Usuários
         [
-            'text' => 'Membros',
+            'text' => 'Usuários',
             'icon' => 'fas fa-users',
+            'icon_color' => 'secondary',
             'submenu' => [
                 [
-                    'text' => 'Lista de Membros',
-                    'url' => 'painel/members',
-                    'icon' => 'fas fa-list',
+                    'text' => 'Lista de Usuários',
+                    'url' => 'painel/users',
+                    'icon' => 'fas fa-user-friends',
                 ],
                 [
-                    'text' => 'Novo Membro',
-                    'url' => 'painel/members/create',
-                    'icon' => 'fas fa-user-plus',
-                    'can' => 'edit-users',
+                    'text' => 'Meu Perfil',
+                    'url' => 'painel/profile',
+                    'icon' => 'fas fa-user-circle',
                 ],
             ],
-        ],
-
-        // Configurações
-        ['header' => 'CONFIGURAÇÕES'],
-        [
-            'text' => 'Configurações do Site',
-            'url' => 'painel/settings',
-            'icon' => 'fas fa-cog',
-        ],
-        [
-            'text' => 'Meu Perfil',
-            'url' => 'painel/profile',
-            'icon' => 'fas fa-user-cog',
-        ],
-
-        // Administração
-        ['header' => 'ADMINISTRAÇÃO', 'can' => 'edit-users'],
-        [
-            'text' => 'Gestão de Usuários',
-            'url' => 'painel/users',
-            'icon' => 'fas fa-users-cog',
-            'can' => 'edit-users',
-        ],
-
-        // Sair
-        [
-            'text' => 'Sair',
-            'url' => 'painel/logout',
-            'icon' => 'fas fa-sign-out-alt',
-            'icon_color' => 'danger',
         ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Menu Filters

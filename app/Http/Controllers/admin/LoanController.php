@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\LoansExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use App\Models\User;
@@ -8,13 +10,29 @@ use Illuminate\Http\Request;
 
 class LoanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $loans = Loan::with(['user', 'payments'])
-            ->whereHas('user') // Filtra apenas empréstimos com usuários válidos
-            ->orderBy('request_date', 'desc')
-            ->paginate(10);
+        $query = Loan::with(['user', 'payments'])
+            ->whereHas('user')
+            ->orderBy('request_date', 'desc');
 
+        // Filtros
+        if ($request->filled('status')) { // Verifica se o campo "status" foi preenchido
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('user_id')) { // Verifica se o campo "user_id" foi preenchido
+            $query->where('user_id', $request->user_id);
+        }
+        if ($request->filled('start_date')) { // Verifica se o campo "start_date" foi preenchido
+            $query->where('request_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) { // Verifica se o campo "end_date" foi preenchido
+            $query->where('request_date', '<=', $request->end_date);
+        }
+
+        $loans = $query->paginate(10);
+
+        // Estatísticas
         $loanStats = [
             'total' => Loan::count(),
             'active' => Loan::where('status', 'approved')->count(),
@@ -22,7 +40,10 @@ class LoanController extends Controller
             'paid' => Loan::where('status', 'paid')->count(),
         ];
 
-        return view('admin.loans.index', compact('loans', 'loanStats'));
+        // Lista de membros ativos
+        $members = User::where('role', 'member')->where('status', true)->get();
+
+        return view('admin.loans.index', compact('loans', 'loanStats', 'members'));
     }
 
     public function create()
@@ -48,7 +69,7 @@ class LoanController extends Controller
         $loan = Loan::create($validated);
 
         return redirect()
-            ->route('admin.loans.show', $loan)
+            ->route('loans.show', $loan)
             ->with('success', 'Empréstimo registrado com sucesso!');
     }
 
@@ -67,7 +88,9 @@ class LoanController extends Controller
             'remainingAmount'
         ));
     }
-
+    public function edit(Loan $loan){
+        return view('admin.loans.edit', compact('loan'));
+    }
     public function update(Request $request, Loan $loan)
     {
         $validated = $request->validate([
@@ -76,7 +99,7 @@ class LoanController extends Controller
 
         $loan->update($validated);
 
-        return redirect()->route('admin.loans.index')
+        return redirect()->route('loans.index')
             ->with('success', 'Status do empréstimo atualizado com sucesso!');
     }
 
@@ -102,7 +125,11 @@ class LoanController extends Controller
             $loan->update(['status' => 'paid']);
         }
 
-        return redirect()->route('admin.loans.show', $loan)
+        return redirect()->route('loans.show', $loan)
             ->with('success', 'Pagamento registrado com sucesso!');
+    }
+    public function export()
+    {
+        return Excel::download(new LoansExport, 'emprestimos.xlsx');
     }
 }

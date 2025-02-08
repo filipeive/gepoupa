@@ -27,7 +27,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Editar Poupança #{{ $saving->id }}</h3>
                     </div>
-                    <form action="{{ route('admin.savings.update', $saving->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('savings.update', $saving->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="card-body">
@@ -61,7 +61,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Atualizar</button>
-                            <a href="{{ route('admin.savings.index') }}" class="btn btn-default">Cancelar</a>
+                            <a href="{{ route('savings.index') }}" class="btn btn-default">Cancelar</a>
                         </div>
                     </form>
                 </div>

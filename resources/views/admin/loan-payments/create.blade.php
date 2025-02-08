@@ -8,7 +8,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.loan-payments.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('loan-payments.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="form-group">
@@ -67,7 +67,7 @@
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Registrar Pagamento</button>
-                    <a href="{{ route('admin.loan-payments.index') }}" class="btn btn-secondary">Cancelar</a>
+                    <a href="{{ route('loan-payments.index') }}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>

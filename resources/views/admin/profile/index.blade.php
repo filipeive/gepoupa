@@ -27,7 +27,7 @@
         <h3 class="card-title">Editar Usuário</h3>
     </div>
     <div class="card-body">
-        <form method="POST" action="{{ route('save', $user->id) }}">
+        <form method="POST" action="{{ route('profile.save', $user->id) }}">
             @csrf
             @method('PUT')
             

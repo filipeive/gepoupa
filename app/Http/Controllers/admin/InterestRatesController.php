@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\InterestRates;
+use App\Exports\InterestRateReport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Loan;
+use Carbon\Carbon;
+use App\Models\SavingCycle; // Corrija aqui!
 use App\Models\InterestDistribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class InterestManagementController extends Controller
+class InterestRatesController extends Controller
 {
     public function index()
     {
@@ -59,18 +63,18 @@ class InterestManagementController extends Controller
 
         return redirect()->back()->with('success', 'Taxa de Juros definida com sucesso!');
     }
-    public function calculateDistribution()
-    {
-        // Calcular juros não distribuídos
-        $undistributedInterest = DB::table('loan_payments')
-            ->whereNotExists(function ($query) {
-                $query->select(DB::raw(1))
-                    ->from('interest_distributions')
-                    ->whereRaw('interest_distributions.payment_id = loan_payments.id');
-            })
-            ->sum('interest_amount');
 
-        // Buscar membros ativos com poupanças
+    public function calculateDistribution(){
+    $undistributedInterest = DB::table('loan_payments')
+        ->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('interest_distributions')
+                ->whereRaw('interest_distributions.cycle_id = loan_payments.cycle_id'); // Correção aqui
+        })
+        ->sum('interest_amount');
+
+
+
         $members = DB::table('users')
             ->join('savings', 'users.id', '=', 'savings.user_id')
             ->where('users.status', true)
@@ -84,10 +88,23 @@ class InterestManagementController extends Controller
 
         $totalSavings = $members->sum('total_savings');
 
+        // Buscar ciclos ativos
+        $cycles = SavingCycle::where('status', 'active')
+        ->orWhere('status', 'completed')
+        ->orderBy('start_date', 'desc')
+        ->get();
+
+
+        // Verificar se os ciclos foram carregados corretamente
+        if ($cycles->isEmpty()) {
+            dd('Nenhum ciclo encontrado!', $cycles);
+        }
+
         return view('admin.interest-rates.calculate', compact(
             'undistributedInterest',
             'members',
-            'totalSavings'
+            'totalSavings',
+            'cycles' // Certifica-te de que esta variável está aqui
         ));
     }
 
@@ -98,7 +115,8 @@ class InterestManagementController extends Controller
             'description' => 'required|string',
             'distributions' => 'required|array',
             'distributions.*.user_id' => 'required|exists:users,id',
-            'distributions.*.amount' => 'required|numeric|min:0'
+            'distributions.*.amount' => 'required|numeric|min:0',
+            'cycle_id' => 'required|exists:saving_cycles,id' // Adicione validação para cycle_id
         ]);
 
         DB::transaction(function () use ($validated) {
@@ -107,23 +125,34 @@ class InterestManagementController extends Controller
                     'user_id' => $distribution['user_id'],
                     'amount' => $distribution['amount'],
                     'distribution_date' => $validated['distribution_date'],
-                    'description' => $validated['description']
+                    'description' => $validated['description'],
+                    'cycle_id' => $validated['cycle_id'] // Adicione o cycle_id
                 ]);
             }
         });
 
         return redirect()
-            ->route('interest-management.index')
+            ->route('interest-rates.index')
             ->with('success', 'Juros distribuídos com sucesso!');
     }
 
     public function report(Request $request)
     {
-        $startDate = $request->input('start_date', now()->startOfMonth());
-        $endDate = $request->input('end_date', now()->endOfMonth());
+        // Converter as datas de string para objetos Carbon
+        $startDate = $request->has('start_date') 
+            ? Carbon::parse($request->start_date)
+            : Carbon::now()->startOfMonth();
+            
+        $endDate = $request->has('end_date')
+            ? Carbon::parse($request->end_date)
+            : Carbon::now()->endOfMonth();
 
+        // Consulta para relatório de juros
         $interestReport = DB::table('loan_payments')
-            ->whereBetween('payment_date', [$startDate, $endDate])
+            ->whereBetween('payment_date', [
+                $startDate->format('Y-m-d'),
+                $endDate->format('Y-m-d')
+            ])
             ->select(
                 DB::raw('SUM(interest_amount) as total_interest'),
                 DB::raw('COUNT(DISTINCT loan_id) as total_loans'),
@@ -131,16 +160,26 @@ class InterestManagementController extends Controller
             )
             ->first();
 
-        $distributionReport = InterestDistribution::whereBetween('distribution_date', [$startDate, $endDate])
+        // Consulta para distribuição
+        $distributionReport = InterestDistribution::whereBetween('distribution_date', [
+                $startDate->format('Y-m-d'),
+                $endDate->format('Y-m-d')
+            ])
             ->with('user')
             ->get()
             ->groupBy('user_id');
 
-        return view('admin.interest-management.report', compact(
+        // Passar as datas como objetos Carbon para a view
+        return view('admin.interest-rates.report', compact(
             'interestReport',
             'distributionReport',
             'startDate',
             'endDate'
         ));
+    }
+
+    public function export()
+    {
+        return Excel::download(new InterestRateReport, 'taxas-juros.xlsx');
     }
 }

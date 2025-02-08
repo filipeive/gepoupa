@@ -95,7 +95,7 @@
                 <div class="icon">
                     <i class="fas fa-hand-holding-heart"></i>
                 </div>
-                <a href="{{ route('admin.social-funds.index') }}" class="small-box-footer">
+                <a href="{{ route('social-funds.index') }}" class="small-box-footer">
                     Mais informações <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>

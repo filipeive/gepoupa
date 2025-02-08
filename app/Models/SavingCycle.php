@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class SavingCycle extends Model
 {
     use HasFactory;
+    protected $table = 'saving_cycles'; 
+    
     protected $fillable = [
         'start_date',
         'end_date',

@@ -20,7 +20,7 @@
     <div class="card-header">
         <div class="row">
             <div class="col-md-8">
-                <form action="{{ route('admin.members.index') }}" method="GET" class="form-inline">
+                <form action="{{ route('members.index') }}" method="GET" class="form-inline">
                     <div class="input-group">
                         <input type="text" name="search" class="form-control" 
                                placeholder="Buscar por nome ou email..." value="{{ $search }}">

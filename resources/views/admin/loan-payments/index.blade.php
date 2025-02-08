@@ -7,7 +7,7 @@
             <h1>Pagamentos de Empréstimos</h1>
         </div>
         <div class="col-sm-6">
-            <a href="{{ route('admin.loan-payments.create') }}" class="btn btn-primary float-right">
+            <a href="{{ route('loan-payments.create') }}" class="btn btn-primary float-right">
                 <i class="fas fa-plus"></i> Novo Pagamento
             </a>
         </div>
@@ -63,10 +63,10 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.loan-payments.edit', $payment) }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route('loan-payments.edit', $payment) }}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.loan-payments.destroy', $payment) }}" method="POST"
+                                    <form action="{{ route('loan-payments.destroy', $payment) }}" method="POST"
                                         class="d-inline">
                                         @csrf
                                         @method('DELETE')
