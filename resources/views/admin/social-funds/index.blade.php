@@ -4,8 +4,24 @@
 @section('title', 'Gestão de Fundos Sociais')
 
 @section('content_header')
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-money-bill-wave text-primary"></i>
+                    Fundos Sociais
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active"> Fundos Sociais</li>
+                </ol>
+            </div>
+        </div>
+    </div>
     <div class="d-flex justify-content-between">
-        <h1>Fundos Sociais</h1>
+        <h1></h1>
         <button class="btn btn-primary" data-toggle="modal" data-target="#createModal">
             <i class="fas fa-plus"></i> Novo Pagamento
         </button>
@@ -22,6 +38,56 @@
 @endif
 @section('content')
     <div class="card">
+        <!-- Card de Estatísticas -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ number_format($totalFunds, 2) }} MZN</h3>
+                        <p>Total Arrecadado</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-money-bill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ number_format($approvedFunds, 2) }} MZN</h3>
+                        <p>Pagamentos Aprovados</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ number_format($pendingFunds, 2) }} MZN</h3>
+                        <p>Pagamentos Pendentes</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ $membersWithoutPayment }}</h3>
+                        <p>Membros sem Pagamento</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card-header">
             <div class="card-tools">
                 <form action="{{ route('social-funds.index') }}" method="GET" class="form-inline">
@@ -115,58 +181,6 @@
             </div>
         @endif
     </div>
-
-    <!-- Card de Estatísticas -->
-    <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ number_format($totalFunds, 2) }} MZN</h3>
-                    <p>Total Arrecadado</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-money-bill"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ number_format($approvedFunds, 2) }} MZN</h3>
-                    <p>Pagamentos Aprovados</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ number_format($pendingFunds, 2) }} MZN</h3>
-                    <p>Pagamentos Pendentes</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>{{ $membersWithoutPayment }}</h3>
-                    <p>Membros sem Pagamento</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-user-times"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal de Criação de Fundo Social -->
     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
         aria-hidden="true">
@@ -208,7 +222,7 @@
                                 <option value="pending">Pendente</option>
                                 <option value="paid">Pago</option>
                                 <option value="late">Atrasado</option>
-                            </select>                            
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -220,7 +234,9 @@
         </div>
     </div>
 @stop
-
+@section('footer')
+    @include('adminlte.footer')
+@stop
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 @stop

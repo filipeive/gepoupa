@@ -282,7 +282,9 @@
         </div>
     @endforeach
 @stop
-
+@section('footer')
+    @include('adminlte.footer')
+@stop
 @section('css')
     <style>
         .table td,

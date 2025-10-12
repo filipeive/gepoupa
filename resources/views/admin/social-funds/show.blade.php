@@ -127,7 +127,9 @@
         </div>
     </div>
 @stop
-
+@section('footer')
+    @include('adminlte.footer')
+@stop
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
 @stop

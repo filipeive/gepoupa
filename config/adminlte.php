@@ -330,6 +330,13 @@ return [
                     'url' => 'painel/reports',
                     'icon' => 'fas fa-chart-bar',
                 ],
+                [
+                    'text' => 'Membros',
+                    'url'  => 'painel/members',
+                    'icon' => 'fas fa-users',
+                    'active' => ['admin/members*'],
+                ],
+
             ],
         ],
 

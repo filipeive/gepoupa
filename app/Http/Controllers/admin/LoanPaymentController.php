@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\LoanPayment;
+use App\Exports\LoanPaymentsExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class LoanPaymentController extends Controller
 {
-    public function index()
+    /* public function index()
     {
         $payments = LoanPayment::with(['loan.user'])
             ->whereHas('loan') // Filtra apenas pagamentos com empréstimos válidos
@@ -18,6 +20,53 @@ class LoanPaymentController extends Controller
             ->paginate(10);
 
         return view('admin.loan-payments.index', compact('payments'));
+    } */
+    public function index(Request $request)
+    {
+        $query = LoanPayment::with(['loan.user'])
+            ->when($request->search, function($query) use ($request) {
+                $query->whereHas('loan.user', function($q) use ($request) {
+                    $q->where('name', 'like', "%{$request->search}%");
+                });
+            })
+            ->when($request->date_from, function($query) use ($request) {
+                $query->where('payment_date', '>=', $request->date_from);
+            })
+            ->when($request->date_to, function($query) use ($request) {
+                $query->where('payment_date', '<=', $request->date_to);
+            })
+            ->when($request->amount_min, function($query) use ($request) {
+                $query->where('amount', '>=', $request->amount_min);
+            })
+            ->when($request->amount_max, function($query) use ($request) {
+                $query->where('amount', '<=', $request->amount_max);
+            });
+
+        if ($request->sort) {
+            $query->orderBy($request->sort, $request->direction ?? 'asc');
+        } else {
+            $query->latest('payment_date');
+        }
+
+        $payments = $query->paginate(10)->withQueryString();
+
+        if ($request->export) {
+            return Excel::download(new LoanPaymentsExport($query), 'pagamentos_emprestimos.xlsx');
+        }
+
+        return view('admin.loan-payments.index', compact('payments'));
+    }
+
+    public function filter(Request $request)
+    {
+        $filters = $request->validate([
+            'date_from' => 'nullable|date',
+            'date_to' => 'nullable|date|after_or_equal:date_from',
+            'amount_min' => 'nullable|numeric|min:0',
+            'amount_max' => 'nullable|numeric|gt:amount_min'
+        ]);
+
+        return redirect()->route('loan-payments.index', $filters);
     }
 
     public function create()
@@ -98,7 +147,7 @@ class LoanPaymentController extends Controller
         }
 
         return redirect()
-            ->route('admin.loan-payments.show', $loanPayment)
+            ->route('loan-payments.show', $loanPayment)
             ->with('success', 'Pagamento atualizado com sucesso!');
     }
 

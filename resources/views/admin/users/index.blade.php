@@ -73,14 +73,14 @@
                                     <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info"
                                         title="Ver">
                                         <i class="fas fa-eye"></i>
-                                    </a> 
+                                    </a>
 
                                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary"
                                         title="Editar">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @if ($loggedId !== intval($user->id))
-                                        <form class="d-inline" action="{{ route('users.destroy', $user->id)}}"
+                                        <form class="d-inline" action="{{ route('users.destroy', $user->id) }}"
                                             method="POST"
                                             onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
                                             @csrf
@@ -128,14 +128,8 @@
         </div>
     </div>
 @stop
-
 @section('footer')
-    <footer class="main-footer">
-        <div class="float-right d-none d-sm-block">
-            <b>Versão</b> 1.0.0
-        </div>
-        <strong>Copyright &copy; {{ date('Y') }} <a href="#">Sua Empresa</a>.</strong> Todos os direitos reservados.
-    </footer>
+    @include('adminlte.footer')
 @stop
 
 @section('css')

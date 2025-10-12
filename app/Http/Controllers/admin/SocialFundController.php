@@ -48,12 +48,12 @@ class SocialFundController extends Controller
 
     public function create()
     {
-        echo "Criar SocialFund";
-       /*  $users = User::where('status', true)
+        //echo "Criar SocialFund";
+        $users = User::where('status', true)
                     ->where('role', 'member')
                     ->get();
 
-        return view('admin.social-funds.create', compact('users')); */
+        return view('admin.social-funds.create', compact('users'));
     }
 
     public function store(Request $request)

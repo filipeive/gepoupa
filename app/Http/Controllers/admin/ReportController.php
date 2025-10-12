@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Saving, Loan, SocialFund, InterestDistribution};
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -215,7 +216,26 @@ class ReportController extends Controller
             })->map->sum('amount'),
         ];
     }
-
+    public function memberReport(User $user)
+    {
+        $totalSavings = $user->savings()->sum('amount');
+        $totalLoans = $user->loans()->sum('amount');
+        $totalInterest = $user->interestEarnings()->sum('amount');
+        $socialFund = $user->socialFundContributions()->sum('amount');
+        
+        $savings = $user->savings()->latest()->get();
+        $loans = $user->loans()->latest()->get();
+        
+        return view('admin.reports.member-report', compact(
+            'user',
+            'totalSavings',
+            'totalLoans',
+            'totalInterest',
+            'socialFund',
+            'savings',
+            'loans'
+        ));
+    }
     // Método auxiliar para formatar dados para gráficos
     private function formatChartData($data, $dateField = 'created_at')
     {

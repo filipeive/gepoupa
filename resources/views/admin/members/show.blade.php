@@ -1,6 +1,5 @@
-<!-- resources/views/social-funds/index.blade.php -->
 @extends('adminlte::page')
-@section('title', 'Socialfunds')
+@section('title', 'Detalhes do Membro')
 
 @section('content_header')
     <div class="row mb-2">
@@ -15,11 +14,12 @@
         </div>
     </div>
 @stop
+
 @section('content')
     <div class="container-fluid">
         <div class="row">
+            <!-- Perfil do Membro -->
             <div class="col-md-3">
-                <!-- Perfil do Membro -->
                 <div class="card card-primary card-outline">
                     <div class="card-body box-profile">
                         <h3 class="profile-username text-center">{{ $member->name }}</h3>
@@ -42,6 +42,7 @@
                 </div>
             </div>
 
+            <!-- Conteúdo Principal -->
             <div class="col-md-9">
                 <div class="card">
                     <div class="card-header p-2">
@@ -61,42 +62,76 @@
                         <div class="tab-content">
                             <!-- Tab Poupanças -->
                             <div class="active tab-pane" id="savings">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Data</th>
-                                            <th>Valor</th>
-                                            <th>Comprovativo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($member->savings as $saving)
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <div class="info-box bg-info">
+                                            <span class="info-box-icon"><i class="fas fa-piggy-bank"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Total Poupado</span>
+                                                <span class="info-box-number">{{ number_format($totalSavings, 2) }} MZN</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="info-box bg-success">
+                                            <span class="info-box-icon"><i class="fas fa-calendar-check"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Poupança Este Ano</span>
+                                                <span class="info-box-number">{{ number_format($currentYearSavings, 2) }} MZN</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="info-box bg-warning">
+                                            <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
+                                            <div class="info-box-content">
+                                                <span class="info-box-text">Retorno Projetado</span>
+                                                <span class="info-box-number">{{ number_format($projectedEarnings, 2) }} MZN</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tabela de Poupanças -->
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $saving->payment_date }}</td>
-                                                <td>{{ number_format($saving->amount, 2) }} MZN</td>
-                                                <td>
-                                                    @if ($saving->proof_file)
-                                                        <a href="{{ Storage::url($saving->proof_file) }}"
-                                                            target="_blank">Ver</a>
-                                                    @endif
-                                                </td>
+                                                <th>Data</th>
+                                                <th>Valor</th>
+                                                <th>Comprovativo</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($member->savings as $saving)
+                                                <tr>
+                                                    <td>{{ $saving->payment_date->format('d/m/Y') }}</td>
+                                                    <td>{{ number_format($saving->amount, 2) }} MZN</td>
+                                                    <td>
+                                                        @if ($saving->proof_file)
+                                                            <a href="{{ Storage::url($saving->proof_file) }}" target="_blank" class="btn btn-sm btn-info">
+                                                                <i class="fas fa-file"></i> Ver
+                                                            </a>
+                                                        @else
+                                                            <span class="text-muted">Sem comprovativo</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             <!-- Tab Fundos Sociais -->
                             <div class="tab-pane" id="social">
-                                <!-- Resumo dos Fundos Sociais -->
                                 <div class="row mb-4">
                                     <div class="col-md-4">
                                         <div class="info-box bg-info">
                                             <span class="info-box-icon"><i class="fas fa-money-bill"></i></span>
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Total Contribuído</span>
-                                                <span class="info-box-number">{{ number_format($totalSocialFunds, 2) }}
-                                                    MZN</span>
+                                                <span class="info-box-number">{{ number_format($totalSocialFunds, 2) }} MZN</span>
                                             </div>
                                         </div>
                                     </div>
@@ -105,8 +140,7 @@
                                             <span class="info-box-icon"><i class="fas fa-clock"></i></span>
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Pendente</span>
-                                                <span class="info-box-number">{{ number_format($pendingSocialFunds, 2) }}
-                                                    MZN</span>
+                                                <span class="info-box-number">{{ number_format($pendingSocialFunds, 2) }} MZN</span>
                                             </div>
                                         </div>
                                     </div>
@@ -115,10 +149,7 @@
                                             <span class="info-box-icon"><i class="fas fa-exclamation-triangle"></i></span>
                                             <div class="info-box-content">
                                                 <span class="info-box-text">Total em Multas</span>
-                                                <span class="info-box-number">
-                                                    {{ number_format($member->socialFunds()->sum('penalty_amount'), 2) }}
-                                                    MZN
-                                                </span>
+                                                <span class="info-box-number">{{ number_format($member->socialFunds()->sum('penalty_amount'), 2) }} MZN</span>
                                             </div>
                                         </div>
                                     </div>
@@ -142,16 +173,14 @@
                                                     <td>{{ $fund->payment_date->format('d/m/Y') }}</td>
                                                     <td>{{ number_format($fund->amount, 2) }} MZN</td>
                                                     <td>
-                                                        <span
-                                                            class="badge badge-{{ $fund->status === 'paid' ? 'success' : ($fund->status === 'pending' ? 'warning' : 'danger') }}">
+                                                        <span class="badge badge-{{ $fund->status === 'paid' ? 'success' : ($fund->status === 'pending' ? 'warning' : 'danger') }}">
                                                             {{ ucfirst($fund->status) }}
                                                         </span>
                                                     </td>
                                                     <td>{{ number_format($fund->penalty_amount, 2) }} MZN</td>
                                                     <td>
                                                         @if ($fund->proof_file)
-                                                            <a href="{{ Storage::url($fund->proof_file) }}" target="_blank"
-                                                                class="btn btn-sm btn-info">
+                                                            <a href="{{ Storage::url($fund->proof_file) }}" target="_blank" class="btn btn-sm btn-info">
                                                                 <i class="fas fa-file"></i> Ver
                                                             </a>
                                                         @else
@@ -166,9 +195,7 @@
                             </div>
 
                             <!-- Tab Empréstimos -->
-                            <!-- Na tab de empréstimos -->
                             <div class="tab-pane" id="loans">
-                                <!-- Resumo de Empréstimos -->
                                 <div class="row mb-4">
                                     <div class="col-md-3">
                                         <div class="small-box bg-info">
@@ -237,8 +264,7 @@
                                                     <td>{{ number_format($loan->amount, 2) }} MZN</td>
                                                     <td>{{ $loan->interest_rate }}%</td>
                                                     <td>
-                                                        <span
-                                                            class="badge badge-{{ $loan->status === 'approved' ? 'success' : 'warning' }}">
+                                                        <span class="badge badge-{{ $loan->status === 'approved' ? 'success' : 'warning' }}">
                                                             {{ ucfirst($loan->status) }}
                                                         </span>
                                                     </td>
@@ -251,16 +277,14 @@
                                                         {{ number_format($totalPaid, 2) }} MZN
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('loans.show', $loan->id) }}"
-                                                            class="btn btn-sm btn-info">
+                                                        <a href="{{ route('loans.show', $loan->id) }}" class="btn btn-sm btn-info">
                                                             <i class="fas fa-eye"></i> Detalhes
                                                         </a>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">Nenhum empréstimo encontrado
-                                                    </td>
+                                                    <td colspan="7" class="text-center">Nenhum empréstimo encontrado</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -273,4 +297,22 @@
             </div>
         </div>
     </div>
-@endsection
+@stop
+
+@section('css')
+    <style>
+        .info-box {
+            cursor: pointer;
+        }
+        .info-box:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+    </style>
+@stop
+
+@section('js')
+    <script>
+        // Adicionar interações com gráficos ou outros elementos JS aqui
+    </script>
+@stop

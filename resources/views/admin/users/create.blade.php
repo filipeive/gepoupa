@@ -130,3 +130,6 @@
         </div>
     </div>
 @endsection
+@section('footer')
+    @include('adminlte.footer')
+@stop

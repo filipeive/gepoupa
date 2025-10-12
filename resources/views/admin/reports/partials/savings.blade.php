@@ -16,8 +16,8 @@
                     <td>MZN {{ number_format($saving->amount, 2, ',', '.') }}</td>
                     <td>{{ $saving->payment_date->format('d/m/Y') }}</td>
                     <td>
-                        <span class="badge badge-{{ $saving->status === 'paid' ? 'success' : 'warning' }}">
-                            {{ ucfirst($saving->status) }}
+                        <span class="badge badge-{{ $saving->status === 'paid' ? 'success' : 'primary' }}">
+                            {{ ucfirst($saving->status ?? 'Confirmado') }}
                         </span>
                     </td>
                 </tr>

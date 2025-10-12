@@ -23,7 +23,7 @@ use App\Http\Controllers\admin\InterestDistributionController;
 use App\Http\Controllers\admin\ReportController;
 
 // Rota principal do site
-Route::get('/', [SiteHomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 
 // Rotas do Painel Administrativo
 Route::prefix('painel')->group(function () {
@@ -51,6 +51,7 @@ Route::prefix('painel')->group(function () {
 
         // Membros
         Route::resource('members', MemberManagementController::class);
+        Route::get('members/export/{format}', [MembersController::class, 'export'])->name('members.export');
         
         // Poupanças
         Route::resource('savings', SavingController::class);
@@ -73,6 +74,8 @@ Route::prefix('painel')->group(function () {
 
         // Pagamentos de Empréstimos
         Route::resource('loan-payments', LoanPaymentController::class);
+        Route::get('loan-payments/filter', [LoanPaymentsController::class, 'filter'])->name('loan-payments.filter');
+        Route::get('loan-payments/export', [LoanPaymentsController::class, 'export']);
 
         // Fundo Social
         Route::resource('social-funds', SocialFundController::class);
@@ -95,6 +98,9 @@ Route::prefix('painel')->group(function () {
             });
         Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
         Route::post('reports/generate', [ReportController::class, 'generateReport'])->name('admin.reports.generate');
+        Route::get('reports/members/{user}', [ReportController::class, 'memberReport'])
+            ->name('reports.member');
+
 });
 
 
