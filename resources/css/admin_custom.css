@@ -1,0 +1,7 @@
+.small-box {
+    transition: transform 0.3s;
+}
+
+.small-box:hover {
+    transform: translateY(-5px);
+}

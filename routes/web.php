@@ -52,8 +52,7 @@ Route::prefix('painel')->group(function () {
 
         // Membros
         Route::resource('members', MemberManagementController::class);
-        Route::get('members/export/{format}', [MemberManagementController::class, 'export'])->name('members.export');
-
+        
         // Poupanças
         Route::resource('savings', SavingController::class);
         Route::get('savings/reports', [SavingController::class, 'report'])
@@ -78,8 +77,6 @@ Route::prefix('painel')->group(function () {
 
         // Pagamentos de Empréstimos
         Route::resource('loan-payments', LoanPaymentController::class);
-        Route::get('loan-payments/filter', [LoanPaymentController::class, 'filter'])->name('loan-payments.filter');
-        Route::get('loan-payments/export', [LoanPaymentController::class, 'export']);
 
         // Fundo Social
         Route::resource('social-funds', SocialFundController::class);
@@ -99,14 +96,9 @@ Route::prefix('painel')->group(function () {
             ->name('interest-distribution.calculate');
         Route::get('interest-distributions/export', [InterestDistributionController::class, 'export'])
             ->name('interest-distributions.export');
-        Route::get('interest-distribution/{id}', [InterestDistributionController::class, 'show'])
-            ->name('interest-distributions.show');
-    });
-    Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
-    Route::post('reports/generate', [ReportController::class, 'generateReport'])->name('admin.reports.generate');
-    Route::get('reports/members/{user}', [ReportController::class, 'memberReport'])
-        ->name('reports.member');
-
+            });
+        Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
+        Route::post('reports/generate', [ReportController::class, 'generateReport'])->name('admin.reports.generate');
 });
 
 

@@ -155,6 +155,7 @@ class UsersController extends Controller
             'phone' => 'nullable|string|max:20',
             'role' => 'required|in:admin,member',
             'status' => 'boolean',
+            'admin' => 'tiny',
             'password' => 'nullable|min:8|confirmed',
         ]);
 

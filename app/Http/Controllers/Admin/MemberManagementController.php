@@ -88,21 +88,4 @@ class MemberManagementController extends Controller
             'loanPayments'
         ));
     }
-    public function export($format)
-    {
-        $members = User::with(['savings', 'socialFunds', 'loans'])
-            ->where('role', 'member')
-            ->get();
-
-        if ($format === 'pdf') {
-            $pdf = PDF::loadView('admin.members.export-pdf', compact('members'));
-            return $pdf->download('members-report.pdf');
-        }
-
-        if ($format === 'excel') {
-            return Excel::download(new MembersExport($members), 'members-report.xlsx');
-        }
-    }
-
-
 }

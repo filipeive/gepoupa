@@ -22,7 +22,6 @@ class ReportController extends Controller
             'yearlyStats' => $this->getYearlyStats(),
             'loanStats' => $this->getLoanStats(),
             'savingsStats' => $this->getSavingsStats(),
-            'users' => User::orderBy('name')->get(),
         ];
 
         return view('admin.reports.index', $data);
@@ -77,49 +76,39 @@ class ReportController extends Controller
     {
         $request->validate([
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'report_type' => 'required|in:savings,loans,social_fund,interest',
-            'user_id' => 'nullable|exists:users,id',
-            'status' => 'nullable|string'
+            'end_date' => 'required|date|after:start_date',
+            'report_type' => 'required|in:savings,loans,social_fund,interest'
         ]);
 
         $data = $this->getReportData(
             $request->report_type,
             $request->start_date,
-            $request->end_date,
-            $request->user_id,
-            $request->status
+            $request->end_date
         );
 
         return view('admin.reports.show', compact('data'));
     }
 
-    private function getReportData($type, $startDate, $endDate, $userId = null, $status = null)
+    private function getReportData($type, $startDate, $endDate)
     {
         switch ($type) {
             case 'savings':
-                return $this->getSavingsReport($startDate, $endDate, $userId);
+                return $this->getSavingsReport($startDate, $endDate);
             case 'loans':
-                return $this->getLoansReport($startDate, $endDate, $userId, $status);
+                return $this->getLoansReport($startDate, $endDate);
             case 'social_fund':
-                return $this->getSocialFundReport($startDate, $endDate, $userId);
+                return $this->getSocialFundReport($startDate, $endDate);
             case 'interest':
-                return $this->getInterestReport($startDate, $endDate, $userId);
+                return $this->getInterestReport($startDate, $endDate);
         }
     }
-
-    private function getSavingsReport($startDate, $endDate, $userId = null)
+    private function getSavingsReport($startDate, $endDate)
     {
-        $query = Saving::with('user')
-            ->whereBetween('payment_date', [$startDate, $endDate]);
+        $savings = Saving::with('user')
+            ->whereBetween('payment_date', [$startDate, $endDate])
+            ->get();
 
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        $savings = $query->get();
-
-        $monthlyData = $savings->groupBy(function ($item) {
+        $monthlyData = $savings->groupBy(function($item) {
             return $item->payment_date->format('Y-m');
         });
 
@@ -130,31 +119,22 @@ class ReportController extends Controller
             'items' => $savings,
             'total' => $savings->sum('amount'),
             'stats' => [
-                'average' => $savings->avg('amount') ?? 0,
-                'max' => $savings->max('amount') ?? 0,
-                'min' => $savings->min('amount') ?? 0,
+                'average' => $savings->avg('amount'),
+                'max' => $savings->max('amount'),
+                'min' => $savings->min('amount'),
             ],
-            'monthly_labels' => $monthlyData->keys()->map(function ($month) {
+            'monthly_labels' => $monthlyData->keys()->map(function($month) {
                 return Carbon::createFromFormat('Y-m', $month)->format('M/Y');
             })->toArray(),
             'monthly_values' => $monthlyData->map->sum('amount')->values()->toArray(),
         ];
     }
 
-    private function getLoansReport($startDate, $endDate, $userId = null, $status = null)
+    private function getLoansReport($startDate, $endDate)
     {
-        $query = Loan::with('user')
-            ->whereBetween('request_date', [$startDate, $endDate]);
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        if ($status) {
-            $query->where('status', $status);
-        }
-
-        $loans = $query->get();
+        $loans = Loan::with('user')
+            ->whereBetween('request_date', [$startDate, $endDate])
+            ->get();
 
         $statusData = $loans->groupBy('status');
 
@@ -166,9 +146,9 @@ class ReportController extends Controller
             'total' => $loans->sum('amount'),
             'total_interest' => $loans->sum('total_interest'),
             'stats' => [
-                'average' => $loans->avg('amount') ?? 0,
-                'max' => $loans->max('amount') ?? 0,
-                'min' => $loans->min('amount') ?? 0,
+                'average' => $loans->avg('amount'),
+                'max' => $loans->max('amount'),
+                'min' => $loans->min('amount'),
                 'status_counts' => [
                     'pending' => $statusData->get('pending', collect())->count(),
                     'approved' => $statusData->get('approved', collect())->count(),
@@ -176,22 +156,17 @@ class ReportController extends Controller
                     'paid' => $statusData->get('paid', collect())->count(),
                 ],
             ],
-            'monthly_data' => $loans->groupBy(function ($loan) {
+            'monthly_data' => $loans->groupBy(function($loan) {
                 return $loan->request_date->format('M/Y');
             })->map->sum('amount'),
         ];
     }
 
-    private function getSocialFundReport($startDate, $endDate, $userId = null)
+    private function getSocialFundReport($startDate, $endDate)
     {
-        $query = SocialFund::with('user')
-            ->whereBetween('payment_date', [$startDate, $endDate]);
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        $funds = $query->get();
+        $funds = SocialFund::with('user')
+            ->whereBetween('payment_date', [$startDate, $endDate])
+            ->get();
 
         return [
             'type' => 'social_fund',
@@ -200,28 +175,23 @@ class ReportController extends Controller
             'items' => $funds,
             'total' => $funds->sum('amount'),
             'stats' => [
-                'average' => $funds->avg('amount') ?? 0,
-                'max' => $funds->max('amount') ?? 0,
-                'min' => $funds->min('amount') ?? 0,
+                'average' => $funds->avg('amount'),
+                'max' => $funds->max('amount'),
+                'min' => $funds->min('amount'),
                 'total_penalties' => $funds->sum('penalty_amount'),
                 'total_late_fees' => $funds->sum('late_fee'),
             ],
-            'monthly_data' => $funds->groupBy(function ($fund) {
+            'monthly_data' => $funds->groupBy(function($fund) {
                 return $fund->payment_date->format('M/Y');
             })->map->sum('amount'),
         ];
     }
 
-    private function getInterestReport($startDate, $endDate, $userId = null)
+    private function getInterestReport($startDate, $endDate)
     {
-        $query = InterestDistribution::with(['cycle', 'user'])
-            ->whereBetween('distribution_date', [$startDate, $endDate]);
-
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-
-        $distributions = $query->get();
+        $distributions = InterestDistribution::with(['cycle', 'user'])
+            ->whereBetween('distribution_date', [$startDate, $endDate])
+            ->get();
 
         $roleDistributions = DB::table('interest_distribution_roles')
             ->select('role', DB::raw('SUM(amount) as total_amount'))
@@ -236,12 +206,12 @@ class ReportController extends Controller
             'items' => $distributions,
             'total' => $distributions->sum('amount'),
             'stats' => [
-                'average' => $distributions->avg('amount') ?? 0,
-                'max' => $distributions->max('amount') ?? 0,
-                'min' => $distributions->min('amount') ?? 0,
+                'average' => $distributions->avg('amount'),
+                'max' => $distributions->max('amount'),
+                'min' => $distributions->min('amount'),
             ],
             'role_distributions' => $roleDistributions,
-            'monthly_data' => $distributions->groupBy(function ($dist) {
+            'monthly_data' => $distributions->groupBy(function($dist) {
                 return $dist->distribution_date->format('M/Y');
             })->map->sum('amount'),
         ];
@@ -252,10 +222,10 @@ class ReportController extends Controller
         $totalLoans = $user->loans()->sum('amount');
         $totalInterest = $user->interestEarnings()->sum('amount');
         $socialFund = $user->socialFundContributions()->sum('amount');
-
+        
         $savings = $user->savings()->latest()->get();
         $loans = $user->loans()->latest()->get();
-
+        
         return view('admin.reports.member-report', compact(
             'user',
             'totalSavings',
@@ -269,7 +239,7 @@ class ReportController extends Controller
     // Método auxiliar para formatar dados para gráficos
     private function formatChartData($data, $dateField = 'created_at')
     {
-        return $data->groupBy(function ($item) use ($dateField) {
+        return $data->groupBy(function($item) use ($dateField) {
             return $item->$dateField->format('M/Y');
         })->map->sum('amount');
     }
