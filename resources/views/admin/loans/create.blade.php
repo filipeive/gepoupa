@@ -69,7 +69,9 @@
         </div>
     </div>
 @stop
-
+@section('footer')
+    @include('adminlte.footer')
+@stop
 @section('js')
 <script>
     $(document).ready(function() {

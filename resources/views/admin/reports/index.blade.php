@@ -3,155 +3,175 @@
 @section('title', 'Relatórios')
 
 @section('content_header')
-    <h1>Relatórios e Estatísticas</h1>
+<h1>Relatórios e Estatísticas</h1>
 @stop
 
 @section('content')
-    {{-- Cards de Resumo --}}
-    <div class="row">
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>MZN {{ number_format($totalSavings, 2, ',', '.') }}</h3>
-                    <p>Total em Poupanças</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-piggy-bank"></i>
-                </div>
+{{-- Cards de Resumo --}}
+<div class="row">
+    <div class="col-lg-3 col-md-6 col-12">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>MZN {{ number_format($totalSavings, 2, ',', '.') }}</h3>
+                <p>Total em Poupanças</p>
             </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>MZN {{ number_format($totalLoans, 2, ',', '.') }}</h3>
-                    <p>Total em Empréstimos</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-money-bill-wave"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>MZN {{ number_format($totalSocialFund, 2, ',', '.') }}</h3>
-                    <p>Fundo Social</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-hand-holding-heart"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>MZN {{ number_format($totalInterestDistributed, 2, ',', '.') }}</h3>
-                    <p>Juros Distribuídos</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-percentage"></i>
-                </div>
+            <div class="icon">
+                <i class="fas fa-piggy-bank"></i>
             </div>
         </div>
     </div>
-
-    {{-- Gráficos --}}
-    <div class="row">
-        <div class="col-md-6 col-12 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Evolução das Poupanças</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="savingsChart" style="max-height: 400px;"></canvas>
-                </div>
+    <div class="col-lg-3 col-md-6 col-12">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>MZN {{ number_format($totalLoans, 2, ',', '.') }}</h3>
+                <p>Total em Empréstimos</p>
             </div>
-        </div>
-        <div class="col-md-6 col-12 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Status dos Empréstimos</h3>
-                </div>
-                <div class="card-body">
-                    <canvas id="loansChart" style="max-height: 400px;"></canvas>
-                </div>
+            <div class="icon">
+                <i class="fas fa-money-bill-wave"></i>
             </div>
         </div>
     </div>
-
-    {{-- Gerador de Relatórios --}}
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Gerar Relatório Personalizado</h3>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('admin.reports.generate') }}" method="POST">
-                @csrf
-                <div class="row">
-                    <div class="col-md-4 col-12 mb-3">
-                        <div class="form-group">
-                            <label>Tipo de Relatório</label>
-                            <select name="report_type" class="form-control">
-                                <option value="savings">Poupanças</option>
-                                <option value="loans">Empréstimos</option>
-                                <option value="social_fund">Fundo Social</option>
-                                <option value="interest">Distribuição de Juros</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-12 mb-3">
-                        <div class="form-group">
-                            <label>Data Inicial</label>
-                            <input type="date" name="start_date" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-12 mb-3">
-                        <div class="form-group">
-                            <label>Data Final</label>
-                            <input type="date" name="end_date" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-12 mb-3">
-                        <div class="form-group">
-                            <label>&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-block">
-                                Gerar Relatório
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+    <div class="col-lg-3 col-md-6 col-12">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>MZN {{ number_format($totalSocialFund, 2, ',', '.') }}</h3>
+                <p>Fundo Social</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-hand-holding-heart"></i>
+            </div>
         </div>
     </div>
-
-    {{-- Top 5 Poupadores --}}
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Top 5 Poupadores</h3>
+    <div class="col-lg-3 col-md-6 col-12">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>MZN {{ number_format($totalInterestDistributed, 2, ',', '.') }}</h3>
+                <p>Juros Distribuídos</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-percentage"></i>
+            </div>
         </div>
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
+    </div>
+</div>
+
+{{-- Gráficos --}}
+<div class="row">
+    <div class="col-md-6 col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Evolução das Poupanças</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="savingsChart" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Status dos Empréstimos</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="loansChart" style="max-height: 400px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Gerador de Relatórios --}}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Gerar Relatório Personalizado</h3>
+    </div>
+    <div class="card-body">
+        <form action="{{ route('admin.reports.generate') }}" method="POST">
+            @csrf
+            <div class="row">
+                <div class="col-md-3 col-12 mb-3">
+                    <div class="form-group">
+                        <label>Tipo de Relatório</label>
+                        <select name="report_type" id="report_type" class="form-control">
+                            <option value="savings">Poupanças</option>
+                            <option value="loans">Empréstimos</option>
+                            <option value="social_fund">Fundo Social</option>
+                            <option value="interest">Distribuição de Juros</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 col-12 mb-3">
+                    <div class="form-group">
+                        <label>Membro (Opcional)</label>
+                        <select name="user_id" class="form-control select2">
+                            <option value="">Todos os Membros</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 col-12 mb-3" id="status_filter" style="display: none;">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="pending">Pendente</option>
+                            <option value="approved">Aprovado</option>
+                            <option value="rejected">Rejeitado</option>
+                            <option value="paid">Pago</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 col-12 mb-3">
+                    <div class="form-group">
+                        <label>Data Inicial</label>
+                        <input type="date" name="start_date" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-3 col-12 mb-3">
+                    <div class="form-group">
+                        <label>Data Final</label>
+                        <input type="date" name="end_date" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-file-alt"></i> Gerar Relatório
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Top 5 Poupadores --}}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Top 5 Poupadores</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Membro</th>
+                    <th>Total Poupado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($savingsStats as $stat)
                     <tr>
-                        <th>Membro</th>
-                        <th>Total Poupado</th>
+                        <td>{{ $stat->name }}</td>
+                        <td>MZN {{ number_format($stat->total, 2, ',', '.') }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach($savingsStats as $stat)
-                        <tr>
-                            <td>{{ $stat->name }}</td>
-                            <td>MZN {{ number_format($stat->total, 2, ',', '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                @endforeach
+            </tbody>
+        </table>
     </div>
+</div>
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
+<link rel="stylesheet" href="/css/admin_custom.css">
 @stop
 
 @section('js')
@@ -192,5 +212,21 @@
             }]
         }
     });
+
+    // Toggle Status Filter
+    const reportType = document.getElementById('report_type');
+    const statusFilter = document.getElementById('status_filter');
+
+    function toggleFilters() {
+        if (reportType.value === 'loans') {
+            statusFilter.style.display = 'block';
+        } else {
+            statusFilter.style.display = 'none';
+        }
+    }
+
+    reportType.addEventListener('change', toggleFilters);
+    toggleFilters(); // Run on load
+
 </script>
 @stop

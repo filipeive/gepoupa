@@ -68,3 +68,6 @@
         </div>
     </div>
 @stop
+@section('footer')
+    @include('adminlte.footer')
+@stop

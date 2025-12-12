@@ -1,10 +1,9 @@
-{{-- resources/views/admin/interest-rates/index.blade.php --}}
 @extends('adminlte::page')
 
 @section('title', 'Gestão de Juros')
 
 @section('content_header')
-    <h1>Gestão de Juros</h1>
+<h1>Gestão de Juros</h1>
 @stop
 
 @section('content')
@@ -108,14 +107,15 @@
                 </table>
             </div>
             <div class="card-footer clearfix">
-                {{ $distributions->links() }}
+                {{ $distributions->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal para Definir Nova Taxa -->
-<div class="modal fade" id="setRateModal" tabindex="-1" role="dialog" aria-labelledby="setRateModalLabel" aria-hidden="true">
+<div class="modal fade" id="setRateModal" tabindex="-1" role="dialog" aria-labelledby="setRateModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form action="{{ route('interest-rates.set') }}" method="POST">
@@ -151,41 +151,41 @@
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
+<link rel="stylesheet" href="/css/admin_custom.css">
 @stop
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Preparar dados para o gráfico
-    const monthlyData = @json($monthlyInterest);
-    const labels = monthlyData.map(item => `${item.month}/${item.year}`);
-    const values = monthlyData.map(item => item.total);
+    document.addEventListener('DOMContentLoaded', function () {
+        // Preparar dados para o gráfico
+        const monthlyData = @json($monthlyInterest);
+        const labels = monthlyData.map(item => `${item.month}/${item.year}`);
+        const values = monthlyData.map(item => item.total);
 
-    // Criar gráfico
-    const ctx = document.getElementById('monthlyInterestChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Juros Mensais (MZN)',
-                data: values,
-                backgroundColor: 'rgba(60,141,188,0.9)',
-                borderColor: 'rgba(60,141,188,0.8)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
+        // Criar gráfico
+        const ctx = document.getElementById('monthlyInterestChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Juros Mensais (MZN)',
+                    data: values,
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
+        });
     });
-});
 </script>
 @stop

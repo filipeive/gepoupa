@@ -17,7 +17,9 @@ class SavingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => fake()->randomFloat(2, 50, 1000),
+            'payment_date' => fake()->date(),
+            'proof_file' => null,
         ];
     }
 }

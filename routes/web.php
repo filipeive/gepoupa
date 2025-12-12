@@ -3,27 +3,28 @@
 use Illuminate\Support\Facades\Route;
 
 // Controllers do Site
-use App\Http\Controllers\site\HomeController as SiteHomeController;
+use App\Http\Controllers\Site\HomeController as SiteHomeController;
 
 // Controllers do Admin
-use App\Http\Controllers\admin\HomeController;
-use App\Http\Controllers\admin\Auth\LoginController;
-use App\Http\Controllers\admin\Auth\RegisterController;
-use App\Http\Controllers\admin\UsersController;
-use App\Http\Controllers\admin\ProfileController;
-use App\Http\Controllers\admin\SavingController;
-use App\Http\Controllers\admin\SavingCycleController;
-use App\Http\Controllers\admin\LoanController;
-use App\Http\Controllers\admin\LoanPaymentController;
-use App\Http\Controllers\admin\SocialFundController;
-use App\Http\Controllers\admin\MemberManagementController;
-use App\Http\Controllers\admin\SavingsReportController;
-use App\Http\Controllers\admin\InterestRatesController;
-use App\Http\Controllers\admin\InterestDistributionController;
-use App\Http\Controllers\admin\ReportController;
+use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\Auth\RegisterController;
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SavingController;
+use App\Http\Controllers\Admin\SavingCycleController;
+use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\LoanPaymentController;
+use App\Http\Controllers\Admin\SocialFundController;
+use App\Http\Controllers\Admin\MemberManagementController;
+use App\Http\Controllers\Admin\SavingsReportController;
+use App\Http\Controllers\Admin\InterestRatesController;
+use App\Http\Controllers\Admin\InterestDistributionController;
+use App\Http\Controllers\Admin\SavingDistributionController;
+use App\Http\Controllers\Admin\ReportController;
 
 // Rota principal do site
-Route::get('/', [SiteHomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 
 // Rotas do Painel Administrativo
 Route::prefix('painel')->group(function () {
@@ -51,7 +52,8 @@ Route::prefix('painel')->group(function () {
 
         // Membros
         Route::resource('members', MemberManagementController::class);
-        
+        Route::get('members/export/{format}', [MemberManagementController::class, 'export'])->name('members.export');
+
         // Poupanças
         Route::resource('savings', SavingController::class);
         Route::get('savings/reports', [SavingController::class, 'report'])
@@ -60,9 +62,12 @@ Route::prefix('painel')->group(function () {
             ->name('savings.export');
         Route::get('savings/export/excel', [SavingController::class, 'exportExcel'])->name('savings.export.excel');
         Route::get('savings/export/pdf', [SavingController::class, 'exportPDF'])->name('savings.export.pdf');
-        
+
         // Ciclos de Poupança
         Route::resource('saving-cycles', SavingCycleController::class);
+
+        // Distribuição de Poupança
+        Route::resource('saving-distributions', SavingDistributionController::class);
 
         // Empréstimos
         Route::resource('loans', LoanController::class);
@@ -73,6 +78,8 @@ Route::prefix('painel')->group(function () {
 
         // Pagamentos de Empréstimos
         Route::resource('loan-payments', LoanPaymentController::class);
+        Route::get('loan-payments/filter', [LoanPaymentController::class, 'filter'])->name('loan-payments.filter');
+        Route::get('loan-payments/export', [LoanPaymentController::class, 'export']);
 
         // Fundo Social
         Route::resource('social-funds', SocialFundController::class);
@@ -83,22 +90,27 @@ Route::prefix('painel')->group(function () {
         Route::get('interest-rates/calculate', [InterestRatesController::class, 'calculateDistribution'])->name('interest-rates.calculate');
         Route::post('interest-rates/distribute', [InterestRatesController::class, 'distribute'])->name('interest-rates.distribute');
         Route::get('interest-rates/report', [InterestRatesController::class, 'report'])->name('interest-rates.report');
-        Route::get('interest-rates/export', [InterestRatesController::class, 'export'])->name('interest-rates.export'); 
+        Route::get('interest-rates/export', [InterestRatesController::class, 'export'])->name('interest-rates.export');
         Route::get('interest-distribution', [InterestDistributionController::class, 'index'])
             ->name('interest-distribution.index');
-        Route::get('interest-distribution/create', [InterestDistributionController::class,'create'])->name('interest-distributions.create');
-        Route::post('interest-distribution/store', [InterestDistributionController::class,'store'])->name('interest-distributions.store');
+        Route::get('interest-distribution/create', [InterestDistributionController::class, 'create'])->name('interest-distributions.create');
+        Route::post('interest-distribution/store', [InterestDistributionController::class, 'store'])->name('interest-distributions.store');
         Route::post('interest-distribution/calculate', [InterestDistributionController::class, 'calculate'])
             ->name('interest-distribution.calculate');
         Route::get('interest-distributions/export', [InterestDistributionController::class, 'export'])
             ->name('interest-distributions.export');
-            });
-        Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
-        Route::post('reports/generate', [ReportController::class, 'generateReport'])->name('admin.reports.generate');
+        Route::get('interest-distribution/{id}', [InterestDistributionController::class, 'show'])
+            ->name('interest-distributions.show');
+    });
+    Route::get('reports', [ReportController::class, 'index'])->name('admin.reports.index');
+    Route::post('reports/generate', [ReportController::class, 'generateReport'])->name('admin.reports.generate');
+    Route::get('reports/members/{user}', [ReportController::class, 'memberReport'])
+        ->name('reports.member');
+
 });
 
 
 // Rota para página não encontrada
 Route::fallback(function () {
-    return view('errors.404');
+    abort(404);
 });

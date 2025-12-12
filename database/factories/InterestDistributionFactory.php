@@ -17,7 +17,9 @@ class InterestDistributionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => fake()->randomFloat(2, 10, 200),
+            'distribution_date' => fake()->date(),
+            'description' => fake()->sentence(),
         ];
     }
 }

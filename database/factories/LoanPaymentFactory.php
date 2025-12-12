@@ -17,7 +17,10 @@ class LoanPaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => fake()->randomFloat(2, 50, 500),
+            'interest_amount' => 0,
+            'payment_date' => fake()->date(),
+            'proof_file' => null,
         ];
     }
 }

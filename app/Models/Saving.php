@@ -13,7 +13,9 @@ class Saving extends Model
         'user_id',
         'amount',
         'payment_date',
-        'proof_file'
+        'proof_file',
+        'reference_month',
+        'reference_year'
     ];
 
     protected $casts = [

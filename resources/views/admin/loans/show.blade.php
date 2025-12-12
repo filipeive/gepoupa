@@ -134,7 +134,9 @@
         </div>
     </div>
 @stop
-
+@section('footer')
+    @include('adminlte.footer')
+@stop
 @section('css')
     <style>
         .card-header {

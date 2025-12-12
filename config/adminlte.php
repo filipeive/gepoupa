@@ -14,7 +14,7 @@ return [
     |
     */
 
-'title' => 'PoupaSYS Admin Panel',
+    'title' => 'PoupaSYS Admin Panel',
     'title_prefix' => '',
     'title_postfix' => ' - PoupaSYS',
 
@@ -298,13 +298,13 @@ return [
     |
     */
 
-   'menu' => [
-    // Dashboard
+    'menu' => [
+        // Dashboard
         [
             'text' => 'Dashboard',
             'url' => 'painel',
             'icon' => 'fas fa-tachometer-alt',
-            'icon_color' => 'primary',
+            'icon_color' => 'success',
         ],
 
         ['header' => 'GESTÃO FINANCEIRA'],
@@ -330,6 +330,19 @@ return [
                     'url' => 'painel/reports',
                     'icon' => 'fas fa-chart-bar',
                 ],
+                [
+                    'text' => 'Membros',
+                    'url' => 'painel/members',
+                    'icon' => 'fas fa-users',
+                    'active' => ['admin/members*'],
+                ],
+                //ditribuicao da poupança
+                [
+                    'text' => 'Distribuição da Poupança',
+                    'url' => 'painel/saving-distributions',
+                    'icon' => 'fas fa-money-bill-wave',
+                ],
+
             ],
         ],
 

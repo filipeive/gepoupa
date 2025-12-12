@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class InterestDistribution extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'cycle_id',
         'user_id',
@@ -14,8 +16,9 @@ class InterestDistribution extends Model
         'description'
     ];
 
-    protected $dates = [
-        'distribution_date'
+    protected $casts = [
+        'distribution_date' => 'date',
+        'amount' => 'decimal:2',
     ];
 
     public function user()

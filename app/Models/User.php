@@ -83,4 +83,13 @@ class User extends Authenticatable
             ->whereMonth('payment_date', now()->month)
             ->sum('amount');
     }
+    public function interestEarnings()
+    {
+        return $this->hasMany(InterestDistribution::class);
+    }
+    public function socialFundContributions()
+    {
+        return $this->hasMany(SocialFund::class);
+    }
+
 }

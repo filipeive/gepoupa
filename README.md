@@ -1,66 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PoupaSYS - Sistema de Gestão de Poupanças e Empréstimos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+O **PoupaSYS** é uma aplicação web desenvolvida em Laravel para gerenciar grupos de poupança (Xitique), empréstimos e fundos sociais. O sistema oferece um painel administrativo completo para controle de membros, ciclos de poupança, distribuição de juros e liquidação de dívidas.
 
-## About Laravel
+## 🚀 Funcionalidades Principais
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 👥 Gestão de Membros
+- Cadastro e edição de usuários.
+- Perfis de acesso: Administrador e Membro.
+- Controle de status (Ativo/Inativo).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 💰 Gestão de Poupanças
+- **Ciclos de Poupança**: Criação e gerenciamento de ciclos com datas de início e fim.
+- **Depósitos**: Registro de poupanças mensais ou esporádicas.
+- **Distribuição**: Funcionalidade para distribuir o valor acumulado ao final do ciclo.
+  - **Liquidação Automática**: O sistema desconta automaticamente dívidas de empréstimos do valor a receber.
+- **Relatórios**: Extratos detalhados de poupança por membro e por ciclo.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 💸 Gestão de Empréstimos
+- **Solicitação**: Registro de pedidos de empréstimo com taxa de juros e data de vencimento.
+- **Aprovação**: Fluxo de aprovação (Pendente -> Aprovado/Rejeitado).
+- **Pagamentos**: Registro de pagamentos parciais ou totais.
+- **Cálculo de Juros**: Gestão de taxas e cálculo automático.
+- **Visualização**: Acompanhamento do saldo devedor ("Valor em Falta") em tempo real.
 
-## Learning Laravel
+### 🤝 Fundo Social
+- Gestão de contribuições para o fundo social do grupo.
+- Controle de penalidades e multas.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 📊 Painel Administrativo
+- Dashboard com estatísticas gerais.
+- Interface amigável baseada no **AdminLTE**.
+- Gráficos e resumos financeiros.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🛠️ Tecnologias Utilizadas
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **PHP 8.x**
+- **Laravel 10.x**
+- **MySQL**
+- **AdminLTE 3** (Interface Administrativa)
+- **Bootstrap 4/5**
 
-## Laravel Sponsors
+## ⚙️ Instalação e Configuração
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Siga os passos abaixo para rodar o projeto localmente:
 
-### Premium Partners
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/seu-usuario/gepoupa.git
+   cd gepoupa
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+2. **Instale as dependências**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
 
-## Contributing
+3. **Configure o ambiente**
+   - Copie o arquivo de exemplo `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Configure as credenciais do banco de dados no arquivo `.env`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Gere a chave da aplicação**
+   ```bash
+   php artisan key:generate
+   ```
 
-## Code of Conduct
+5. **Execute as migrações e seeders**
+   Isso criará as tabelas e populará o banco com dados iniciais (incluindo o admin).
+   ```bash
+   php artisan migrate --seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. **Inicie o servidor**
+   ```bash
+   php artisan serve
+   ```
 
-## Security Vulnerabilities
+## 🔐 Acesso ao Sistema
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Após rodar os seeders, você pode acessar o sistema com as seguintes credenciais padrão:
 
-## License
+- **URL**: `http://localhost:8000/painel/login`
+- **E-mail**: `admin@example.com`
+- **Senha**: `password`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> **Nota**: Recomenda-se alterar a senha do administrador após o primeiro acesso.
+
+## 📄 Licença
+
+Este projeto é open-source e está licenciado sob a [MIT license](https://opensource.org/licenses/MIT).

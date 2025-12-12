@@ -6,12 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class interestRates extends Model
+class InterestRates extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = ['rate', 'effective_date', 'description'];
-    protected $dates = ['effective_date', 'deleted_at'];
+
+    protected $casts = [
+        'effective_date' => 'date',
+        'deleted_at' => 'datetime',
+        'rate' => 'decimal:2',
+    ];
 
     public function scopeLatest($query)
     {

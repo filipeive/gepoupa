@@ -17,7 +17,12 @@ class LoanFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'amount' => $amount = fake()->randomFloat(2, 100, 5000),
+            'interest_rate' => 10.00,
+            'status' => fake()->randomElement(['pending', 'approved', 'rejected', 'paid']),
+            'request_date' => fake()->date(),
+            'due_date' => fake()->dateTimeBetween('now', '+6 months'),
+            'current_balance' => $amount, // Initialize with amount
         ];
     }
 }
